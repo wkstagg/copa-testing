@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4    
     
-    - run: docker build . --file Dockerfile --tag $CONTAINER_NAME
+    - run: echo "$CONTAINER_NAME"; docker build . --file Dockerfile --tag "$CONTAINER_NAME"
       name: Build the Docker image
             
       # You may pin to the exact commit or the version.
@@ -25,7 +25,7 @@ jobs:
     - uses: aquasecurity/trivy-action@0.29.0
       name: Aqua Security Trivy
       with:
-        image-ref: $CONTAINER_NAME
+        image-ref: "$CONTAINER_NAME"
         ignore-unfixed: true
         hide-progress: true
         format: 'json'
@@ -35,7 +35,7 @@ jobs:
       name: Copacetic Action
       with:
         # The image reference to patch
-        image: $CONTAINER_NAME
+        image: "$CONTAINER_NAME"
         # The trivy json report of the image to patch
         image-report: 'trivy-scan-1.json'
         # The new patched image tag
@@ -44,7 +44,7 @@ jobs:
     - uses: aquasecurity/trivy-action@0.29.0
       name: Aqua Security Trivy (post patch)
       with:
-        image-ref: $CONTAINER_NAME-patched
+        image-ref: "$CONTAINER_NAME-patched"
         ignore-unfixed: true
         hide-progress: true
         format: 'json'

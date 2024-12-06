@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4    
+
+    - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
+      name: Build the Docker image
     
     - run: echo "$CONTAINER_NAME"; docker build . --file Dockerfile --tag "$CONTAINER_NAME"
       name: Build the Docker image

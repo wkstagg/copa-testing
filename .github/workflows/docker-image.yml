@@ -9,18 +9,16 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
+      name: Build the Docker image
       run: docker build . --file Dockerfile --tag wkstagg-test:$(date +%s)
             
       # You may pin to the exact commit or the version.
       # uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0
     - uses: aquasecurity/trivy-action@0.29.0
-    - name: Aqua Security Trivy
+      name: Aqua Security Trivy
       with:
         image-ref: wkstagg-test:$(date +%s)
         ignore-unfixed: true
@@ -28,10 +26,8 @@ jobs:
         format: 'json'
         output: 'trivy-scan-1.json'
         
-    - name: Copacetic Action
-  # You may pin to the exact commit or the version.
-  # uses: project-copacetic/copa-action@9a4406210914e570a473abf3f1e6c4fd952c7749
     - uses: project-copacetic/copa-action@v1.1.0
+      name: Copacetic Action
       with:
         # The image reference to patch
         image: wkstagg-test:$(date +%s)
@@ -41,7 +37,7 @@ jobs:
         patched-tag: '-patched'
 
     - uses: aquasecurity/trivy-action@0.29.0
-    - name: Aqua Security Trivy (post patch)
+      name: Aqua Security Trivy (post patch)
       with:
         image-ref: wkstagg-test:$(date +%s)-patched
         ignore-unfixed: true

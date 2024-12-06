@@ -11,9 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4    
+    
+    - run: docker build . --file Dockerfile --tag wkstagg-test:$(date +%s)
       name: Build the Docker image
-      run: docker build . --file Dockerfile --tag wkstagg-test:$(date +%s)
             
       # You may pin to the exact commit or the version.
       # uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0

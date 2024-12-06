@@ -17,7 +17,7 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
     
-    - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $(CONTAINER_NAME)
+    - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME
       name: Build the Docker image
             
       # You may pin to the exact commit or the version.
@@ -25,7 +25,7 @@ jobs:
     - uses: aquasecurity/trivy-action@0.29.0
       name: Aqua Security Trivy
       with:
-        image-ref: $(CONTAINER_NAME)
+        image-ref: ${{ env.CONTAINER_NAME }}
         ignore-unfixed: true
         hide-progress: true
         format: 'json'

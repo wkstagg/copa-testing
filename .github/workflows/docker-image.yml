@@ -35,7 +35,7 @@ jobs:
       name: Copacetic Action
       with:
         # The image reference to patch
-        image: $(CONTAINER_NAME)
+        image: ${{ env.CONTAINER_NAME }}
         # The trivy json report of the image to patch
         image-report: 'trivy-scan-1.json'
         # The new patched image tag
@@ -44,7 +44,7 @@ jobs:
     - uses: aquasecurity/trivy-action@0.29.0
       name: Aqua Security Trivy (post patch)
       with:
-        image-ref: "$CONTAINER_NAME-patched"
+        image-ref: "${{ env.CONTAINER_NAME }}-patched"
         ignore-unfixed: true
         hide-progress: true
         format: 'json'

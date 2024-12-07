@@ -39,7 +39,7 @@ jobs:
         # The trivy json report of the image to patch
         image-report: 'trivy-scan-1.json'
         # The new patched image tag
-        patched-tag: '-patched'
+        # patched-tag: '-patched'
 
     - uses: aquasecurity/trivy-action@0.29.0
       name: Aqua Security Trivy (post patch)

@@ -17,11 +17,17 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
-
-    - name: Docker Setup Buildx
-      # You may pin to the exact commit or the version.
-      # uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349
-      uses: docker/setup-buildx-action@v3.7.1
+    -  
+      name: Set up Docker
+      uses: docker/setup-docker-action@v4
+      with:
+        daemon-config: |
+          {
+            "debug": true,
+            "features": {
+              "containerd-snapshotter": true
+            }
+          }
       
     
     - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME

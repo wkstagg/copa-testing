@@ -30,7 +30,7 @@ jobs:
         # List of output destinations (format: type=local,dest=path)
         outputs: type=docker
         # List of tags
-        tags: docker-image://docker.io/library/${{ env.CONTAINER_NAME }} 
+        tags: docker.io/library/${{ env.CONTAINER_NAME }} 
                
       
     - 

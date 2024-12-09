@@ -1,4 +1,4 @@
-name: Docker Image CI
+ame: Docker Image CI
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
 
     - 
       name: Generate Trivy Report 
-      uses: aquasecurity/trivy-action@d43c1f16c00cfd3978dde6c07f4bbcf9eb6993ca # 0.16.1 
+      uses: aquasecurity/trivy-action@0.29.0
       with: 
          scan-type: "image" 
          format: "json" 
@@ -59,7 +59,7 @@ jobs:
          # custom-socket: "/var/run/buildkit/buildkitd.sock" # optional, used for custom socket address 
     - 
       name: Generate Trivy Report (POST)
-      uses: aquasecurity/trivy-action@d43c1f16c00cfd3978dde6c07f4bbcf9eb6993ca # 0.16.1 
+      uses: aquasecurity/trivy-action@d0.29.0 
       with: 
          scan-type: "image" 
          format: "json" 

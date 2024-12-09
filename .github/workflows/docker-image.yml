@@ -17,18 +17,6 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
-    -  
-      name: Set up Docker
-      uses: docker/setup-docker-action@v4
-      with:
-        daemon-config: |
-          {
-            "debug": true,
-            "features": {
-              "containerd-snapshotter": true
-            }
-          }
-      
     
     - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME
       name: Build the Docker image
@@ -43,6 +31,18 @@ jobs:
         hide-progress: true
         format: 'json'
         output: 'trivy-scan-1.json'
+
+    -  
+      name: Set up Docker
+      uses: docker/setup-docker-action@v4
+      with:
+        daemon-config: |
+          {
+            "debug": true,
+            "features": {
+              "containerd-snapshotter": true
+            }
+          }
         
     - uses: project-copacetic/copa-action@v1.1.0
       name: Copacetic Action

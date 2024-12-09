@@ -59,7 +59,7 @@ jobs:
          # custom-socket: "/var/run/buildkit/buildkitd.sock" # optional, used for custom socket address 
     - 
       name: Generate Trivy Report (POST)
-      uses: aquasecurity/trivy-action@d0.29.0 
+      uses: aquasecurity/trivy-action@0.29.0 
       with: 
          scan-type: "image" 
          format: "json" 

@@ -26,7 +26,7 @@ jobs:
          output: "report.json" 
          ignore-unfixed: true 
          vuln-type: "os" 
-         image-ref: ${{ CONTAINER_NAME }} 
+         image-ref: ${{ env.CONTAINER_NAME }} 
 
        # check whether there are any OS package vulnerabilities 
     -
@@ -48,7 +48,7 @@ jobs:
        # and rely on dependabot for digest/version updates 
       uses: project-copacetic/copa-action@main 
       with: 
-        image: ${{ CONTAINER_NAME }} 
+        image: ${{ env.CONTAINER_NAME }} 
         image-report: "report.json" 
         patched-tag: "patched" 
         timeout: "5m" # optional, default is 5m 
@@ -66,4 +66,4 @@ jobs:
          output: "report.json" 
          ignore-unfixed: true 
          vuln-type: "os" 
-         image-ref: ${{ CONTAINER_NAME }} 
+         image-ref: ${{ env.CONTAINER_NAME }}-patched 

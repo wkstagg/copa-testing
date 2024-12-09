@@ -17,51 +17,53 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
-    
-    - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME
-      name: Build the Docker image
-            
-      # You may pin to the exact commit or the version.
-      # uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0
-    - uses: aquasecurity/trivy-action@0.29.0
-      name: Aqua Security Trivy
-      with:
-        image-ref: ${{ env.CONTAINER_NAME }}
-        ignore-unfixed: true
-        hide-progress: true
-        format: 'json'
-        output: 'trivy-scan-1.json'
+    - 
+      name: Generate Trivy Report 
+      uses: aquasecurity/trivy-action@d43c1f16c00cfd3978dde6c07f4bbcf9eb6993ca # 0.16.1 
+      with: 
+         scan-type: "image" 
+         format: "json" 
+         output: "report.json" 
+         ignore-unfixed: true 
+         vuln-type: "os" 
+         image-ref: ${{ CONTAINER_NAME }} 
 
-    -  
-      name: Set up Docker
-      uses: docker/setup-docker-action@v4
-      with:
-        daemon-config: |
-          {
-            "debug": true,
-            "features": {
-              "containerd-snapshotter": true
-            }
-          }
-        
-    - uses: project-copacetic/copa-action@v1.1.0
-      name: Copacetic Action
-      with:
-        # The image reference to patch
-        image: ${{ env.CONTAINER_NAME }}
-        # The trivy json report of the image to patch
-        image-report: 'trivy-scan-1.json'
-        # The new patched image tag
-        patched-tag: "patched"
-        
+       # check whether there are any OS package vulnerabilities 
+    -
+      name: Check vulnerability count 
+      id: vuln_count 
+      run: | 
+        report_file="report.json" 
+        vuln_count=$(jq 'if .Results then [.Results[] | select(.Class=="os-pkgs" and .Vulnerabilities!=null) | .Vulnerabilities[]] | length else 0 end' "$report_file") 
+        echo "vuln_count=$vuln_count" >> $GITHUB_OUTPUT 
 
-    - uses: aquasecurity/trivy-action@0.29.0
-      name: Aqua Security Trivy (post patch)
-      with:
-        image-ref: "${{ env.CONTAINER_NAME }}-patched"
-        ignore-unfixed: true
-        hide-progress: true
-        format: 'json'
-        output: 'trivy-scan-1.json'
-          
-    
+       # copa action will only run if there are vulnerabilities 
+    - 
+      name: Run Copa action 
+      if: steps.vuln_count.outputs.vuln_count != '0' 
+      id: copa 
+       # using main for testing purposes 
+       # use a tag (such as v1 or v1.0.1) at a bare minimum 
+       # recommendation is to pin to a digest for security and stability 
+       # and rely on dependabot for digest/version updates 
+      uses: project-copacetic/copa-action@main 
+      with: 
+        image: ${{ CONTAINER_NAME }} 
+        image-report: "report.json" 
+        patched-tag: "patched" 
+        timeout: "5m" # optional, default is 5m 
+        output: vex.json # optional 
+        format: "openvex" # optional, default is openvex 
+         # copa-version: "0.6.0" # optional, default is latest 
+         # buildkit-version: "v0.12.4" # optional, default is latest 
+         # custom-socket: "/var/run/buildkit/buildkitd.sock" # optional, used for custom socket address 
+    - 
+      name: Generate Trivy Report (POST)
+      uses: aquasecurity/trivy-action@d43c1f16c00cfd3978dde6c07f4bbcf9eb6993ca # 0.16.1 
+      with: 
+         scan-type: "image" 
+         format: "json" 
+         output: "report.json" 
+         ignore-unfixed: true 
+         vuln-type: "os" 
+         image-ref: ${{ CONTAINER_NAME }} 

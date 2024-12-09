@@ -17,6 +17,9 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
+    - run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME
+      name: Build the Docker image
+      
     - 
       name: Generate Trivy Report 
       uses: aquasecurity/trivy-action@0.29.0

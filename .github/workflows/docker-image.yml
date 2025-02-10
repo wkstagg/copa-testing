@@ -66,6 +66,8 @@ jobs:
          ignore-unfixed: true 
          vuln-type: "os" 
          image-ref: ${{ env.CONTAINER_NAME }} 
+         # unix domain socket path to use for docker scanning, ex. unix:///var/run/docker.sock
+         docker-host: unix:///${SOCKET}
 
        # check whether there are any OS package vulnerabilities 
     -
@@ -101,4 +103,6 @@ jobs:
          output: "report.json" 
          ignore-unfixed: true 
          vuln-type: "os" 
-         image-ref: ${{ env.CONTAINER_NAME }}-patched 
+         image-ref: ${{ env.CONTAINER_NAME }}-patched
+         # unix domain socket path to use for docker scanning, ex. unix:///var/run/docker.sock
+         docker-host: unix:///${SOCKET}

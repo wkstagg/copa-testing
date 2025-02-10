@@ -44,9 +44,12 @@ jobs:
          vuln-type: "os" 
          image-ref: ${{ env.CONTAINER_NAME }} 
 
-    - name: Set up Docker
-      uses: crazy-max/ghaction-setup-docker@v3
+    - name: Docker Setup Docker
+        # You may pin to the exact commit or the version.
+        # uses: docker/setup-docker-action@370a7dad4b8ce8dbf00f9363e1652e5074dd6abe
+      uses: docker/setup-docker-action@v4.1.0
       with:
+        # Docker daemon JSON configuration
         daemon-config: |
             {
             "debug": true,
@@ -55,6 +58,8 @@ jobs:
                 "containerd-snapshotter": true
                 }
             }
+
+          
     - name: Get socket path
       run: |
           url=$(docker context inspect | jq -r .[0].Endpoints.docker.Host)

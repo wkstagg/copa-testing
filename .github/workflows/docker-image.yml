@@ -17,6 +17,29 @@ jobs:
     - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
+    - name: Docker Setup Docker
+        # You may pin to the exact commit or the version.
+        # uses: docker/setup-docker-action@370a7dad4b8ce8dbf00f9363e1652e5074dd6abe
+      uses: docker/setup-docker-action@v4.1.0
+      with:
+        # Docker daemon JSON configuration
+        daemon-config: |
+            {
+            "debug": true,
+            "experimental": true,
+                "features": {
+                "containerd-snapshotter": true
+                }
+            }
+
+          
+    - name: Get socket path
+      run: |
+          url=$(docker context inspect | jq -r .[0].Endpoints.docker.Host)
+          socket_path=$(echo "$url" | awk -F// '{print $2}')
+          echo "$socket_path"
+          echo "SOCKET=$socket_path" >> $GITHUB_ENV
+
     #- run: echo $(CONTAINER_NAME); docker build . --file Dockerfile --tag $CONTAINER_NAME
     #  name: Build the Docker image
 
@@ -43,29 +66,6 @@ jobs:
          ignore-unfixed: true 
          vuln-type: "os" 
          image-ref: ${{ env.CONTAINER_NAME }} 
-
-    - name: Docker Setup Docker
-        # You may pin to the exact commit or the version.
-        # uses: docker/setup-docker-action@370a7dad4b8ce8dbf00f9363e1652e5074dd6abe
-      uses: docker/setup-docker-action@v4.1.0
-      with:
-        # Docker daemon JSON configuration
-        daemon-config: |
-            {
-            "debug": true,
-            "experimental": true,
-                "features": {
-                "containerd-snapshotter": true
-                }
-            }
-
-          
-    - name: Get socket path
-      run: |
-          url=$(docker context inspect | jq -r .[0].Endpoints.docker.Host)
-          socket_path=$(echo "$url" | awk -F// '{print $2}')
-          echo "$socket_path"
-          echo "SOCKET=$socket_path" >> $GITHUB_ENV
 
        # check whether there are any OS package vulnerabilities 
     -

@@ -81,11 +81,7 @@ jobs:
       name: Run Copa action 
       if: steps.vuln_count.outputs.vuln_count != '0' 
       id: copa 
-       # using main for testing purposes 
-       # use a tag (such as v1 or v1.0.1) at a bare minimum 
-       # recommendation is to pin to a digest for security and stability 
-       # and rely on dependabot for digest/version updates 
-      uses: project-copacetic/copa-action@main 
+      uses: project-copacetic/copa-action@v1.2.1
       with: 
         image: ${{ env.CONTAINER_NAME }} 
         image-report: "report.json" 
@@ -95,7 +91,7 @@ jobs:
         format: "openvex" # optional, default is openvex 
          # copa-version: "0.6.0" # optional, default is latest 
          # buildkit-version: "v0.12.4" # optional, default is latest 
-        custom-socket: ${{env.SOCKET}} # optional, used for custom socket address 
+        custom-socket: ${SOCKET} # optional, used for custom socket address 
     - 
       name: Generate Trivy Report (POST)
       uses: aquasecurity/trivy-action@0.29.0 

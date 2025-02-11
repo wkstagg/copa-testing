@@ -101,8 +101,9 @@ jobs:
       uses: aquasecurity/trivy-action@0.29.0 
       with: 
          scan-type: "image" 
-         format: "json" 
-         output: "report.json" 
+         # format: "json" 
+         # output: "report.json" 
+         output: "table"
          ignore-unfixed: true 
          vuln-type: "os" 
          image-ref: ${{ env.CONTAINER_NAME }}:patched

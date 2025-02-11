@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4    
 
-    - run: echo "CONTAINER_NAME=wkstagg-test:$(date +%s)" >> $GITHUB_ENV
+    - run: |
+        echo "CONTAINER_NAME=wkstagg-test" >> $GITHUB_ENV
+        echo "CONTAINER_TAG=$(date +%s)" >> $GITHUB_ENV
       name: Set container name
 
     - name: Docker Setup Docker
@@ -53,7 +55,7 @@ jobs:
         # List of output destinations (format: type=local,dest=path)
         outputs: type=docker
         # List of tags
-        tags: docker.io/library/${{ env.CONTAINER_NAME }} 
+        tags: docker.io/library/${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }} 
                
       
     - 
@@ -65,7 +67,7 @@ jobs:
          output: "report.json" 
          ignore-unfixed: true 
          vuln-type: "os" 
-         image-ref: ${{ env.CONTAINER_NAME }} 
+         image-ref: ${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
          # unix domain socket path to use for docker scanning, ex. unix:///var/run/docker.sock
          docker-host: unix:///${SOCKET}
 
@@ -85,7 +87,7 @@ jobs:
       id: copa 
       uses: project-copacetic/copa-action@v1.2.1
       with: 
-        image: ${{ env.CONTAINER_NAME }} 
+        image: ${{ env.CONTAINER_NAME }}:${{ env.CONTAINER_TAG }}
         image-report: "report.json" 
         patched-tag: "patched" 
         timeout: "5m" # optional, default is 5m 
@@ -103,6 +105,6 @@ jobs:
          output: "report.json" 
          ignore-unfixed: true 
          vuln-type: "os" 
-         image-ref: ${{ env.CONTAINER_NAME }}-patched
+         image-ref: ${{ env.CONTAINER_NAME }}:patched
          # unix domain socket path to use for docker scanning, ex. unix:///var/run/docker.sock
          docker-host: unix:///${SOCKET}

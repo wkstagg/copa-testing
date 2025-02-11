@@ -101,11 +101,22 @@ jobs:
       uses: aquasecurity/trivy-action@0.29.0 
       with: 
          scan-type: "image" 
-         format: "table" 
-         # output: "report.json" 
+         format: "json" 
+         output: "final-report.json" 
          # output: "table"
          ignore-unfixed: true 
          vuln-type: "os" 
          image-ref: ${{ env.CONTAINER_NAME }}:patched
          # unix domain socket path to use for docker scanning, ex. unix:///var/run/docker.sock
          docker-host: unix:///${SOCKET}
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.6.0
+      with:
+        # Artifact name
+        name: final-scan.json
+        # A file, directory or wildcard pattern that describes what to upload
+        path: final-report.json
+        # The desired behavior if no files are found using the provided path.
+        if-no-files-found: warn
+        retention-days: 0
